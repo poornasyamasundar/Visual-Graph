@@ -1,0 +1,141 @@
+body
+{
+	margin: 0px;
+	padding: 5px;
+	display: grid;
+	grid-template-columns: 600px 300px auto;
+	grid-gap: 10px;
+	background-color: pink;
+	font-family: sans-serif;
+}
+#container
+{
+	display: grid;
+	grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+	width: 600px;
+	height: 600px;
+	grid-column: 1 /1;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	background-color: pink;
+}
+.point
+{
+	width: 28px;
+	height: 28px;
+	border-radius: 15px;
+	background-color: lightblue;
+	border-color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: Darkblue;
+	font-weight: bold;
+	font-size: 20px;
+	border-width: 1px;
+	border-style: solid;
+}
+#header
+{
+	display: flex;
+	overflow: hidden;
+	height: 85px;
+	background-color: orange;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	grid-column: 1 / 4;
+}
+#options
+{
+	background-color: lightgreen;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+}
+#algorithm
+{
+	background-color: orange;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+}
+#lines
+{
+	position: absolute;
+}
+#lines > div
+{
+	position: absolute;
+}
+ul
+{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+#headings > li
+{
+	background-color: violet;
+	outline-style: solid;
+	font-size: 27px;
+	outline-color: black;
+	outline-width: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 80px;
+	width: 160px;
+	float: left;
+	text-align: center;
+}
+#editgraph > label
+{
+	height: 80px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+#editgraph > label:hover
+{
+	cursor: pointer;
+}
+.point:hover
+{
+	background-color: green;
+}
+#options > ul > li
+{
+	font-size: 25px;
+	height: 50px;
+	background-color: tomato;
+	margin-bottom: 4px;
+}
+#options > ul > li > label
+{
+	display: flex;
+	height: 50px;
+	justify-content: center;
+	align-items: center;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+}	
+input
+{
+	opacity: 1;
+}
+#options > ul > li > label:hover
+{
+	background-color: red;
+	transform: scale(1.05);
+	cursor: pointer;
+}
+#headings > li:hover
+{
+	background-color: darkviolet;
+	cursor: pointer;
+	transform: scale(1.05);
+}
+
