@@ -1,5 +1,21 @@
 //---------------------variables--------------------------
-
+class graph
+{
+	constructor()
+	{
+		this.name = '';
+		this.adjlist = [];
+		this.positions = [];
+	}
+}
+class vertex
+{
+	constructor()
+	{
+		this.neighbours = [];
+	}
+}
+let currentGraph = '';
 let NoOfVertices = 0;
 let NoOfEdges = 0;
 //------------------------functions-----------------------------------------
@@ -44,12 +60,14 @@ function insertPoints()
 				NoOfVertices++;
 				point.innerHTML = NoOfVertices;
 				point.style.zIndex = "1";
+				point.style.boxShadow = '0 0 1px 2px black';
 			}
 			else
 			{
 				let k = point.innerHTML;
 				point.innerHTML = "";
 				point.style.zIndex = "";
+				point.style.boxShadow = "none";
 				for( let j = 0 ; j < 400 ; j++ )
 				{
 					if( points[j].innerHTML != "" && points[j].innerHTML > k )
@@ -84,6 +102,9 @@ function insertLine()
 				}
 				else if( i === start )
 				{
+					start = -1;
+					end = -1;
+					point.style.backgroundColor = 'lightblue';
 				}
 				else
 				{
@@ -115,12 +136,58 @@ function hide()
 		{
 			points[i].style.visibility = "hidden";
 		}
-		else
-		{
-			points[i].style.borderWidth = '4px';
-		}
 	}
-	document.querySelector('#container').backgroundColor = 'pink';
+}
+
+function unhide()
+{
+	let points = document.querySelectorAll('.point');
+	for( let i = 0 ; i < 400 ; i++ )
+	{
+		points[i].style.visibility = 'visible';
+		points[i].style.backgroundColor = 'lightblue';
+	}
+}
+function getgraph( object )
+{
+	let g = new graph();
+	g.name = object.name;
+	g.adjlist = object.adjlist;
+	g.positions = object.adjlist;
+	return g;
+}
+function getlist()
+{
+	let object = JSON.parse(localStorage.graphs);
+	let g = [];
+	for( let i = 0 ; i < object.length ; i++ )
+	{
+		g.push(getgraph(object[i]));
+	}
+	return g;
+}
+
+function submitGraphName()
+{
+	let newitem = document.createElement('li');
+	newitem.innerHTML = document.querySelector('#newgraph').querySelector('#graphname').value;
+	newitem.id = newitem.innerHTML;
+	currentGraph = new graph();
+	currentGraph.name = newitem.id;
+	if( !localStorage.getItem(currentGraph.name) )
+	{
+		document.querySelector('#load').querySelector('ul').appendChild(newitem);
+		document.querySelector('#newgraph').style.display = 'none';
+		let list = getlist();
+		list.push(currentGraph);
+		localStorage.graphs = JSON.stringify(list);
+	}
+	else
+	{
+		alert('This Graph already exists');
+		document.querySelector('#newGraph').querySelector('form').value = "";
+	}
+	return false;
 }
 
 function editGraph()
@@ -134,6 +201,7 @@ function editGraph()
 			il.querySelector('input').checked = false;
 			iv.style.backgroundColor = 'red';
 			il.style.backgroundColor = 'tomato';
+			unhide();
 			insertPoints();
 		}
 		else
@@ -160,9 +228,37 @@ function editGraph()
 		}
 	}
 }
+
+function updateGraphList()
+{
+	let list = getlist(JSON.parse(localStorage.graphs));
+	for( let i = 0 ; i < list.length ; i++ )
+	{
+		let newitem = document.createElement('li');
+		newitem.id = list[i].name;
+		newitem.innerHTML = list[i].name;
+		document.querySelector('#load').querySelector('ul').appendChild(newitem);
+	}
+
+}
 //--------------------------------------Events----------------------------------------
 document.addEventListener('DOMContentLoaded', function() 
 	{
+		document.querySelector('#load').onmouseover = () => {
+    			document.querySelector('#load').querySelector('ul').style.display = 'initial';
+		}
+		document.querySelector('#load').onmouseout = () => {
+    			document.querySelector('#load').querySelector('ul').style.display = 'none';
+		}
+		document.querySelector('#load').querySelector('ul').querySelector('li').onclick = () =>
+		{
+			document.querySelector('#newgraph').style.display = 'initial';
+		}
+		if( !localStorage.graphs )
+		{
+			localStorage.graphs = JSON.stringify([]);
+		}
+		updateGraphList();
 		let iv = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0];
 		let il = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1];
 
@@ -176,6 +272,11 @@ document.addEventListener('DOMContentLoaded', function()
 		}
 
 		document.querySelector('#editgraph').querySelector('label').onclick = () => {
+			if( currentGraph === '' )
+			{
+				alert('load a graph to edit');
+				return;
+			}
 			if( document.querySelector('#editgraph').querySelector('input').checked === true )
 			{
 				il.querySelector('input').disabled = false;
@@ -187,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function()
 					iv.querySelector('label').style.cursor = 'pointer';
 				}
 				editGraph();
+				unhide();
 			}
 			else
 			{
@@ -200,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function()
 				iv.querySelector('label').onmouseover = () =>{
 					iv.querySelector('label').style.cursor = 'not-allowed';
 				}
+				hide();
 			}
 		}
 	});

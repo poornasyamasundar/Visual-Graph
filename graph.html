@@ -11,8 +11,14 @@
 				<li id = "home">Home</li>
 				<li id = "reset">Reset Graph</li>
 				<li id = "clear">Clear Canvas</li>
-				<li id = "load">Load Graph</li>
+				<li id = "load">
+					<div id = "loadgraph">Load Graph</div>
+					<ul>
+						<li>+ New Graph</li>
+					</ul>
+				</li>
 				<li id = "editgraph"><label><input type= "checkbox" id = "edit">Edit Graph</label></li>
+				<li id = 'savegraph'>Save</li>
 			</ul>
 		</div>
 		<div id="container">
@@ -38,16 +44,32 @@
 			<div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div><div class = 'point'></div>
 		</div>
 		<div id = "lines"></div>
-		<div id = "options">
-			<ul>
-				<li>
-					<label><input type = "checkbox" id = "insertvertex">Insert Vertex</label>
-				</li>
-				<li>
-					<label><input type = "checkbox" id = "insertline">Insert Line</label>
-				</li>
-			</ul>
+		<div id = "board">
+			<div id = "options">
+				<ul>
+					<li>
+						<label><input type = "checkbox" id = "insertvertex">Insert Vertex</label>
+					</li>
+					<li>
+						<label><input type = "checkbox" id = "insertline">Insert Line</label>
+					</li>
+				</ul>
+			</div>
+			<div id = 'content'>
+			</div>
 		</div>
-		<div id = "algorithm"></div>
+		<div id = "algorithm">
+		</div>
+		<div id = 'newgraph'>
+			<div id = 'box'>
+				<form onsubmit="return submitGraphName()">
+					<label for='graphname'>Enter the Name of the Graph</label>
+					<input type="text" id ='graphname' name = 'name'>
+					<br>
+					<input type = 'submit' value='Create'>
+					<button id ="cancel">Cancel</button>
+				</form>
+			</div>
+		</div>
 	</body>
 </html>

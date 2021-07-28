@@ -11,7 +11,7 @@ body
 #container
 {
 	display: grid;
-	grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+	grid-template-columns: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
 	width: 600px;
 	height: 600px;
 	grid-column: 1 /1;
@@ -35,6 +35,9 @@ body
 	font-size: 20px;
 	border-width: 1px;
 	border-style: solid;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 0px;
 }
 #header
 {
@@ -47,12 +50,25 @@ body
 	outline-width: 4px;
 	grid-column: 1 / 4;
 }
+#board
+{
+	display: grid;
+	grid-template-rows: 115px auto;
+}
+#content
+{
+	background-color: lightgreen;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+}
 #options
 {
 	background-color: lightgreen;
 	outline-style: solid;
 	outline-color: black;
 	outline-width: 4px;
+	margin-bottom: 10px;
 }
 #algorithm
 {
@@ -60,6 +76,54 @@ body
 	outline-style: solid;
 	outline-color: black;
 	outline-width: 4px;
+}
+#newgraph
+{
+	display: none;
+	position:absolute;
+	color: Blue;
+	background-color: grey;
+	z-index: 3;
+	height: 100vh;
+	width: 100vw;
+	font-size: 30px;
+	text-align: center;
+}
+#newgraph #box
+{
+	height: 100px;
+	width: 600px;
+	border-width: 2px;
+	border-style: solid;
+	border-color: black;
+	background-color: pink;
+	position: absolute;
+	margin-left: 30vw;
+	margin-top: 40vh;
+	padding: 10px;
+}
+#newgraph input
+{
+	border-width: 3px;
+	border-style: solid;
+	border-color: black;
+	height: 30px;
+}
+#newgraph input[type="submit"], #newgraph button
+{
+	margin-top: 20px;
+	border-width:2px;
+	border-style: solid;
+	border-color: black;
+	background-color: lightblue;
+	font-size: 20px;
+	text-align: center;
+	height: 40px;
+	width: 100px;
+}
+#newgraph button
+{
+	margin-left: 100px;
 }
 #lines
 {
@@ -75,6 +139,10 @@ ul
 	margin: 0px;
 	padding: 0px;
 }
+#headings
+{
+	position: absolute;
+}
 #headings > li
 {
 	background-color: violet;
@@ -89,6 +157,47 @@ ul
 	width: 160px;
 	float: left;
 	text-align: center;
+}
+#headings > #load
+{
+	background-color: violet;
+	display: block;
+	float: left;
+	width: 160px;
+}
+#headings > #load > ul
+{
+	display: none;
+	z-index: 2;
+	position: absolute;
+}
+#headings > #load > #loadgraph
+{
+	height: 80px;
+	width: 160px;
+	display: flex;
+	align-items:center;
+	text-align: center;
+	justify-content: center;
+	outline-style: solid;
+	font-size: 27px;
+	outline-color: black;
+	outline-width: 4px;
+}
+#headings > #load > ul > li
+{
+	background-color: violet;
+	height: 40px;
+	width: 160px;
+	display: flex;
+	align-items:center;
+	text-align: center;
+	justify-content: center;
+	outline-style: solid;
+	font-size: 27px;
+	outline-color: black;
+	outline-width: 4px;
+	margin-bottom: 4px;
 }
 #editgraph > label
 {
@@ -132,10 +241,17 @@ input
 	transform: scale(1.05);
 	cursor: pointer;
 }
-#headings > li:hover
+#headings li:hover
 {
 	background-color: darkviolet;
 	cursor: pointer;
 	transform: scale(1.05);
 }
-
+#headings #load #loadgraph:hover
+{
+	background-color: darkviolet;
+}
+#headings #load ul li:hover
+{
+	background-color: darkviolet;
+}
