@@ -41,14 +41,13 @@ body
 }
 #header
 {
-	display: flex;
-	overflow: hidden;
-	height: 85px;
+	height: 91px;
 	background-color: orange;
 	outline-style: solid;
 	outline-color: black;
 	outline-width: 4px;
 	grid-column: 1 / 4;
+	min-width: 500px;
 }
 #board
 {
@@ -62,6 +61,19 @@ body
 	outline-color: black;
 	outline-width: 4px;
 }
+#content > ul > li
+{
+	background-color: lightgreen;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 4px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+}
 #options
 {
 	background-color: lightgreen;
@@ -72,7 +84,60 @@ body
 }
 #algorithm
 {
+	padding: 5px;
 	background-color: orange;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	min-width: 200px;
+}
+#algorithm > #BFS > #queue
+{
+	background-color: lightyellow;
+	height: 66px;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	font-size: 20px;
+	font-weight: bold;
+}
+#algorithm > #BFS > #queue > p
+{
+	margin: 0px;
+	height: 25px;
+}
+#algorithm > #BFS > #queue > ul
+{
+	background-color: lightgreen;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	height: 40px;
+}
+#algorithm > #BFS > #queue > ul > li
+{
+	background-color: red;
+	outline-style: solid;
+	outline-color: black;
+	outline-width: 4px;
+	width: 40px;
+	height: 40px;
+	float: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}	
+#bfscode
+{
+	background-color: orange;
+	margin-top: 10px;
+}
+#bfscode > li
+{
+	margin-top: 5px;
+	padding: 5px;
+	font-size: 20px;
+	font-style: italic;
 	outline-style: solid;
 	outline-color: black;
 	outline-width: 4px;
@@ -109,7 +174,7 @@ body
 	border-color: black;
 	height: 30px;
 }
-#newgraph input[type="submit"], #newgraph button
+#newgraph input[type="submit"]
 {
 	margin-top: 20px;
 	border-width:2px;
@@ -123,7 +188,15 @@ body
 }
 #newgraph button
 {
-	margin-left: 100px;
+	border-width:2px;
+	float: left;
+	border-style: solid;
+	border-color: black;
+	background-color: lightblue;
+	font-size: 20px;
+	text-align: center;
+	height: 40px;
+	width: 100px;
 }
 #lines
 {
@@ -132,6 +205,8 @@ body
 #lines > div
 {
 	position: absolute;
+	background-color: black;
+	border-color: black;
 }
 ul
 {
@@ -142,6 +217,8 @@ ul
 #headings
 {
 	position: absolute;
+	padding: 5px;
+	display: inline;
 }
 #headings > li
 {
@@ -155,8 +232,8 @@ ul
 	justify-content: center;
 	height: 80px;
 	width: 160px;
-	float: left;
 	text-align: center;
+	float: left;
 }
 #headings > #load
 {
@@ -213,6 +290,8 @@ ul
 .point:hover
 {
 	background-color: green;
+	cursor: pointer;
+	transform: scale(1.1);
 }
 #options > ul > li
 {
@@ -254,4 +333,11 @@ input
 #headings #load ul li:hover
 {
 	background-color: darkviolet;
+}
+#lines div:hover
+{
+	background-color: green;
+	border-color: green;
+	transform: scale(2);
+	cursor: pointer;
 }
