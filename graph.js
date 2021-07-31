@@ -16,6 +16,7 @@ class vertex
 	}
 }
 let currentGraph = new graph();
+let sourcevertex = -1;
 //------------------------functions-----------------------------------------
 function drawLine( start, end, lineId ) 
 {
@@ -273,6 +274,7 @@ function clearCanvas()
 		points[i].innerHTML = '';
 		points[i].style.zIndex = '';
 		points[i].style.boxShadow = 'none';
+		points[i].style.color = 'black';
 	}
 
 	let lines = document.querySelector('#lines').querySelectorAll('div');
@@ -307,14 +309,16 @@ function loadGraph( name )
 	for( let i = 0 ; i < currentGraph.adjlist.length ; i++ )
 	{
 		let m = i;
+		let d = currentGraph.positions[m];
 		for( let j = 0 ; j < currentGraph.adjlist[i].neighbours.length ; j++ )
 		{
 			let n = currentGraph.adjlist[i].neighbours[j];
-			if( m < n )
+			let e = currentGraph.positions[n];
+			if( d < e )
 			{
 				let newitem = document.createElement('div');
 				document.querySelector('#lines').appendChild(newitem)
-				newitem.id = 'line'+currentGraph.positions[m]+''+currentGraph.positions[n];
+				newitem.id = 'line'+d+''+e;
 				drawLine( currentGraph.positions[m], currentGraph.positions[n], newitem.id);
 			}
 		}
@@ -391,6 +395,24 @@ function updateGraphList()
 
 }
 
+function selectSourceVertex()
+{
+	let points = document.querySelectorAll('.point');
+	for( let i = 0 ; i < 400 ; i++ )
+	{
+		points[i].onclick = () =>
+		{
+			if( document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].querySelector('input').checked === false )
+				return;
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[0].innerHTML = 'SourceVertex: ' + currentGraph.positions.indexOf(i);
+			document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].querySelector('input').checked = false;
+			sourcevertex = i;
+			points[i].style.backgroundColor = 'green';
+			b = true;
+		}
+	}
+}
+
 function blockEdit()
 {
 	document.querySelector('#editgraph').querySelector('input').checked = false;
@@ -410,6 +432,160 @@ function blockEdit()
 	}
 	iv.style.backgroundColor = 'tomato';
 	hide();
+}
+
+function resetAlgo()
+{
+	let steps = document.querySelector('#bfscode').querySelectorAll('li');
+	for( let i = 0 ; i < steps.length ; i++ )
+	{
+		steps[i].style.backgroundColor = 'orange';
+	}
+}
+
+function runBFS()
+{
+	for( let i = 0 ; i < currentGraph.adjlist.length ; i++ )
+	{
+		currentGraph.adjlist[i].neighbours.sort();
+	}
+	let index = -1;
+	let steps = document.querySelector('#bfscode').querySelectorAll('li');
+	let points = document.querySelectorAll('.point');
+	let currentvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1];
+	let vadjvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2];
+	let queue = document.querySelector('#BFS').querySelector('#queue').querySelector('ul');
+	let cvertex = -1;
+	let vvertex = -1;
+	console.log(currentGraph);
+	console.log(sourcevertex);
+	document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].onclick = () =>
+	{
+		console.log('index = ' + index );
+		if( index === 13 )
+			return;
+		resetAlgo();
+		if( document.querySelector('#start').checked === false )
+		{
+			clearCanvas();
+			if( currentGraph.name != '' )
+				loadGraph(currentGraph.name);
+			return;
+		}
+		if( index == -1 )
+		{
+			steps[0].style.backgroundColor = 'yellow';
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				points[currentGraph.positions[i]].style.backgroundColor = 'white';
+				points[currentGraph.positions[i]].d = -1;
+				points[currentGraph.positions[i]].p = -1;
+			}
+			index++;
+		}
+		else if( index == 0 )
+		{
+			steps[1].style.backgroundColor = 'yellow';
+			points[sourcevertex].style.backgroundColor = 'grey';
+			points[sourcevertex].d = 0;
+			points[sourcevertex].p = -1;
+			index++;
+		}
+		else if( index == 1 )
+		{
+			steps[2].style.backgroundColor = 'yellow';
+			let element = document.createElement('li');
+			element.innerHTML = ''+currentGraph.positions.indexOf(sourcevertex);
+			queue.appendChild(element);
+			index++;
+		}
+		else if( index == 2 )
+		{
+			steps[3].style.backgroundColor = 'yellow';
+			if( queue.querySelectorAll('li').length === 0 )
+			{
+				index = 8;
+			}
+			else
+			{
+				index++;
+			}
+		}
+		else if( index == 3 )
+		{
+			steps[4].style.backgroundColor = 'yellow';
+			cvertex = Number(queue.querySelector('li').innerHTML);
+			currentvertex.innerHTML = 'CurrentVertex: '+cvertex;
+			queue.querySelector('li').remove();
+			index++;
+		}
+		else if( index === 4 )
+		{
+			steps[5].style.backgroundColor = 'yellow';
+			if( vvertex === -1 )
+			{
+				if( currentGraph.adjlist[cvertex].neighbours.length != 0 )
+				{
+					vvertex = 0;
+					index++;
+					vadjvertex.innerHTML = 'v: '+ currentGraph.adjlist[cvertex].neighbours[vvertex];
+				}
+			}
+			else if( currentGraph.adjlist[cvertex].neighbours.length-1 > vvertex )
+			{
+				vvertex++;
+				index++;
+				vadjvertex.innerHTML = 'v: '+ currentGraph.adjlist[cvertex].neighbours[vvertex];
+			}
+			else
+			{
+				vvertex = -1;
+				index = 10;
+				vadjvertex.innerHTML = 'v: ';
+			}
+		}
+		else if( index === 5 )
+		{
+			steps[6].style.backgroundColor = 'yellow';
+			if( points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor === 'white' )
+			{
+				index++;
+			}
+			else
+			{
+				if( currentGraph.adjlist[cvertex].neighbours.length-1 === vvertex )
+					index = 7;
+				else
+					index = 4;
+			}
+		}
+		else if( index == 6 )
+		{
+			steps[7].style.backgroundColor = 'yellow';
+				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor = 'grey';
+				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d; 
+				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].p = cvertex; 
+				let element = document.createElement('li');
+				element.innerHTML = ''+currentGraph.adjlist[cvertex].neighbours[vvertex];
+				queue.appendChild(element);
+				if( currentGraph.adjlist[cvertex].neighbours.length-1 === vvertex )
+					index = 7;
+				else
+					index = 4;
+		}
+		else if( index == 7 )
+		{
+			steps[8].style.backgroundColor = 'yellow';
+			points[currentGraph.positions[cvertex]].style.backgroundColor = 'black';
+			points[currentGraph.positions[cvertex]].style.color = 'white';
+			vvertex = -1;
+			index = 2;
+		}
+		else
+		{
+			clearCanvas();
+		}
+	}
 }
 //--------------------------------------Events----------------------------------------
 document.addEventListener('DOMContentLoaded', function() 
@@ -435,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function()
 		{
 			clearCanvas();
 			if( currentGraph.name != '' )
-				loadGraph();
+				loadGraph( currentGraph.name );
 		}
 		document.querySelector('#load').onmouseout = () => {
     			document.querySelector('#load').querySelector('ul').style.display = 'none';
@@ -447,6 +623,28 @@ document.addEventListener('DOMContentLoaded', function()
 		document.querySelector('#savegraph').onclick = ()=>
 		{
 			saveGraph();
+		}
+		document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].onclick = () => 
+		{
+			if( document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].querySelector('input').checked === true )
+			{
+				document.querySelector('#content').querySelector('ul').querySelectorAll('li')[0].innerHTML = 'SourceVertex: ';
+				clearCanvas();
+				if( currentGraph.name != '' )
+					loadGraph( currentGraph.name );
+				selectSourceVertex();
+			}
+			else
+			{
+				return;
+			}
+		}
+		document.querySelector('#start').onclick = ()=>
+		{
+			if( document.querySelector('#start').checked === true )
+			{
+				runBFS();
+			}
 		}
 		if( !localStorage.graphs )
 		{

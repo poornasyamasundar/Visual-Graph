@@ -54,12 +54,22 @@
 					<li>
 						<label><input type = "checkbox" id = "insertline">Insert Line</label>
 					</li>
+					<li>
+						<label><input type = 'checkbox' id = 'selectsourcevertex'>Select Source vertex</label>
+					</li>
+					<li>
+						<label><input type = 'checkbox' id = 'start'>Start</label>
+					</li>
+					<li>
+						<label><input type = 'checkbox' id = 'stop'>Stop</label>
+					</li>
 				</ul>
 			</div>
 			<div id = 'content'>
 				<ul>
-					<li>SourceVertex</li>
-					<li>CurrentVertex Examined</li>
+					<li>SourceVertex:</li>
+					<li>CurrentVertex:</li>
+					<li>v:</li>
 					<li>Next Step</li>
 				</ul>
 			</div>
@@ -69,14 +79,22 @@
 				<div id = 'queue'>
 					<p>Queue</p>
 					<ul>
-						<li>1</li>
-						<li>2</li>
-						<li>3</li>
 					</ul>
 				</div>
 				<ul id = 'bfscode'>
-					<li>lknflahgag</li>
-					<li>poorna<br>syama<br>sundar</li>
+					<li>for each vertex u in graph<br>&emsp;&emsp;u.color = WHITE<br>&emsp;&emsp;u.d = -1<br>&emsp;&emsp;u.p = NIL</li>
+					<li>source.color = GRAY<br>source.d = 0<br>s.p = NIL</li>
+					<li>ENQUEUE(source)</li>
+					<li>while( Queue != NIL )</li>
+					<li>&emsp;&emsp;currentVertex = DEQUEUE()</li>
+					<li>&emsp;&emsp;for v in adj[u]</li>
+					<li>&emsp;&emsp;&emsp;&emsp;if v.color == WHITE</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.color = GRAY
+					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.d = u.d + 1
+					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.p = u
+					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;ENQUEUE(v)</li>
+					<li>&emsp;&emsp;currentVertex.color = BLACK</li>
+					<li>Print BFS Tree</li>
 				</ul>
 			</div>
 		</div>
