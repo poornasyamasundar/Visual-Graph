@@ -62,7 +62,7 @@ function insertPoints()
 		let point = points[i];
 		point.onclick = () => 
 		{
-			if( document.querySelector('#insertvertex').checked === false )
+			if( document.querySelector('#options').querySelector('ul').querySelector('li').style.backgroundColor === 'tomato' )
 				return;
 			if( point.innerHTML == "" )
 			{
@@ -99,8 +99,6 @@ function insertPoints()
 				}
 				currentGraph.positions.splice(k, 1);
 				currentGraph.adjlist.splice(k, 1);
-				console.log(currentGraph.adjlist[0].neighbours[0] + '   ' + typeof(currentGraph.adjlist[0].neighbours[0]));
-				console.log(currentGraph.adjlist[1].neighbours[0] + '   ' + typeof(currentGraph.adjlist[1].neighbours[0]));
 				for( let j = 0 ; j < currentGraph.adjlist.length ; j++ )
 				{
 					if( currentGraph.adjlist[j].neighbours.indexOf(k) != -1 )
@@ -132,7 +130,7 @@ function insertLine()
 		let point = points[i];
 		point.onclick = () =>
 		{
-			if( document.querySelector('#insertline').checked === false )
+			if( document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.backgroundColor === 'tomato' )
 				return;
 			if( point.innerHTML != "" )
 			{
@@ -179,7 +177,8 @@ function insertLine()
 			let line = lines[i];
 			line.onclick = () =>
 			{
-				console.log('Helloline');
+				if( document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.backgroundColor === 'tomato' )
+					return;
 				if( document.querySelector('#insertline').checked === false )
 					return;
 				currentGraph.adjlist[line.start].neighbours.splice(currentGraph.adjlist[line.start].neighbours.indexOf(line.end), 1);
@@ -326,6 +325,8 @@ function loadGraph( name )
 			if( d < e )
 			{
 				let newitem = document.createElement('div');
+				newitem.start = i;
+				newitem.end = j;
 				document.querySelector('#lines').appendChild(newitem)
 				newitem.id = 'line'+d+''+e;
 				drawLine( currentGraph.positions[m], currentGraph.positions[n], newitem.id);
@@ -339,40 +340,35 @@ function loadGraph( name )
 
 function editGraph()
 {
+	document.querySelector('#editgraph').style.backgroundColor = 'darkviolet';
 	let iv = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0];
 	let il = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1];
+	let save = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2];
 
-	iv.onclick = () =>{
-		if( iv.querySelector('input').checked == true )
-		{
-			il.querySelector('input').checked = false;
-			iv.style.backgroundColor = 'red';
-			il.style.backgroundColor = 'tomato';
-			unhide();
-			insertPoints();
-		}
-		else
-		{
-			il.querySelector('input').checked = false;
-			iv.style.backgroundColor = 'tomato';
-			il.style.backgroundColor = 'tomato';
-		}
+	iv.style.display = 'flex';
+	il.style.display = 'flex';
+	save.style.display = 'flex';
+
+	iv.onclick = () =>
+	{
+		iv.style.backgroundColor = 'red';
+		il.style.backgroundColor = 'tomato';
+		unhide();
+		insertPoints();
 	}
-	il.onclick = () =>{
-		if( il.querySelector('input').checked === true )
-		{
-			iv.querySelector('input').checked = false;
-			il.style.backgroundColor = 'red';
-			iv.style.backgroundColor = 'tomato';
-			hide();
-			insertLine();
-		}
-		else
-		{
-			iv.querySelector('input').checked = false;
-			iv.style.backgroundColor = 'tomato';
-			il.style.backgroundColor = 'tomato';
-		}
+	il.onclick = () =>
+	{
+		iv.style.backgroundColor = 'tomato';
+		il.style.backgroundColor = 'red';
+		hide();
+		insertLine();
+	}
+	save.onclick = () =>
+	{
+		iv.style.backgroundColor = 'tomato';
+		il.style.backgroundColor = 'tomato';
+		alert('Graph successfully saved');
+		saveGraph();
 	}
 }
 
@@ -424,23 +420,13 @@ function selectSourceVertex()
 
 function blockEdit()
 {
-	document.querySelector('#editgraph').querySelector('input').checked = false;
-	let iv = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0];
-	let il = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1];
-
-	il.querySelector('input').disabled = true;
-	il.querySelector('input').checked = false;
-	il.querySelector('label').onmouseover = () =>{
-		il.querySelector('label').style.cursor = 'not-allowed';
-	}
-	il.style.backgroundColor = 'tomato';
-	iv.querySelector('input').disabled = true;
-	iv.querySelector('input').checked = false;
-	iv.querySelector('label').onmouseover = () =>{
-		iv.querySelector('label').style.cursor = 'not-allowed';
-	}
-	iv.style.backgroundColor = 'tomato';
-	hide();
+	document.querySelector('#editgraph').style.backgroundColor = 'violet';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0].style.display = 'none';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.display = 'none';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].style.display = 'none';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0].style.backgroundColor = 'tomato';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.backgroundColor = 'tomato';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].style.backgroundColor = 'tomato';
 }
 
 function resetAlgo()
@@ -452,7 +438,8 @@ function resetAlgo()
 	}
 }
 
-function showTree( tree )
+
+function showTree( tree, s )
 {
 	console.log( 'in show tree');
 	let lines = document.querySelector('#lines').querySelectorAll('div');
@@ -482,7 +469,7 @@ function showTree( tree )
 	}
 }
 
-function hideTree( tree )
+function hideTree( tree, s )
 {
 	let lines = document.querySelector('#lines').querySelectorAll('div');
 	for( let i = 0 ; i < lines.length ; i++ )
@@ -510,6 +497,17 @@ function hideTree( tree )
 
 }
 
+function createToolTips()
+{
+	let points = document.querySelectorAll('.point');
+	for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+	{
+		let tooltip = document.createElement('div');
+		tooltip.innerHTML = 'd: <i>-1</i><br>p: <i>nil</i>';
+		points[currentGraph.positions[i]].appendChild(tooltip);
+	}
+}
+
 function runBFS()
 {
 	for( let i = 0 ; i < currentGraph.adjlist.length ; i++ )
@@ -530,15 +528,22 @@ function runBFS()
 	let queue = document.querySelector('#BFS').querySelector('#queue').querySelector('ul');
 	let cvertex = -1;
 	let vvertex = -1;
+	createToolTips();
 	console.log(currentGraph);
 	console.log(sourcevertex);
-	document.querySelector('#content').querySelector('ul').querySelector('#showtree').onmouseover = () =>
+	let showtree = document.querySelector('#content').querySelector('ul').querySelector('#showtree');
+	showtree.onclick = () =>
 	{
-		showTree( tree );
-	}
-	document.querySelector('#content').querySelector('ul').querySelector('#showtree').onmouseout = () =>
-	{
-		hideTree( tree );
+		if( showtree.innerHTML === 'Show Tree' )
+		{
+			showTree( tree, sourcevertex );
+			showtree.innerHTML = 'Hide Tree';
+		}
+		else if( showtree.innerHTML === 'Hide Tree')
+		{
+			hideTree( tree, sourcevertex );
+			showtree.innerHTML = 'Show Tree';
+		}
 	}
 	document.querySelector('#content').querySelector('ul').querySelector('#nextstep').onclick = () =>
 	{
@@ -562,7 +567,6 @@ function runBFS()
 			{
 				points[currentGraph.positions[i]].style.backgroundColor = 'white';
 				points[currentGraph.positions[i]].d = -1;
-				points[currentGraph.positions[i]].p = -1;
 			}
 			index++;
 		}
@@ -571,7 +575,7 @@ function runBFS()
 			steps[1].style.backgroundColor = 'yellow';
 			points[sourcevertex].style.backgroundColor = 'grey';
 			points[sourcevertex].d = 0;
-			points[sourcevertex].p = -1;
+			points[sourcevertex].querySelector('div').innerHTML = 'd: 0</br>p: <i>nil</i>';
 			index++;
 		}
 		else if( index == 1 )
@@ -657,8 +661,8 @@ function runBFS()
 		{
 			steps[7].style.backgroundColor = 'yellow';
 				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor = 'grey';
-				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d; 
-				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].p = cvertex; 
+				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d+1; 
+				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].querySelector('div').innerHTML = 'd: '+(points[currentGraph.positions[cvertex]].d+1)+'<br>p: '+cvertex; 
 				tree.adjlist[cvertex].neighbours.push(currentGraph.adjlist[cvertex].neighbours[vvertex]);
 				let element = document.createElement('li');
 				element.innerHTML = ''+currentGraph.adjlist[cvertex].neighbours[vvertex];
@@ -672,6 +676,7 @@ function runBFS()
 		{
 			steps[8].style.backgroundColor = 'yellow';
 			points[currentGraph.positions[cvertex]].style.backgroundColor = 'black';
+			points[currentGraph.positions[cvertex]].color = 'black';
 			points[currentGraph.positions[cvertex]].style.color = 'white';
 			for( let i = 0 ; i < currentGraph.adjlist[cvertex].neighbours.length ; i++ )
 			{
@@ -680,9 +685,9 @@ function runBFS()
 			vvertex = -1;
 			index = 2;
 		}
-		else
+		else if( index == 8 )
 		{
-			clearCanvas();
+			return;
 		}
 	}
 }
@@ -702,6 +707,13 @@ document.addEventListener('DOMContentLoaded', function()
 				}
 			}
 		}
+		document.querySelector('#load').onmouseout = () => {
+    			document.querySelector('#load').querySelector('ul').style.display = 'none';
+		}
+		document.querySelector('#load').querySelector('ul').querySelectorAll('li')[0].onclick = () =>
+		{
+			document.querySelector('#newgraph').style.display = 'initial';
+		}
 		document.querySelector('#clear').onclick = () =>
 		{
 			clearCanvas();
@@ -711,17 +723,7 @@ document.addEventListener('DOMContentLoaded', function()
 			clearCanvas();
 			if( currentGraph.name != '' )
 				loadGraph( currentGraph.name );
-		}
-		document.querySelector('#load').onmouseout = () => {
-    			document.querySelector('#load').querySelector('ul').style.display = 'none';
-		}
-		document.querySelector('#load').querySelector('ul').querySelectorAll('li')[0].onclick = () =>
-		{
-			document.querySelector('#newgraph').style.display = 'initial';
-		}
-		document.querySelector('#savegraph').onclick = ()=>
-		{
-			saveGraph();
+			blockEdit();
 		}
 		document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].onclick = () => 
 		{
@@ -750,40 +752,22 @@ document.addEventListener('DOMContentLoaded', function()
 			localStorage.graphs = JSON.stringify([]);
 		}
 		updateGraphList();
-		let iv = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0];
-		let il = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1];
 
-		il.querySelector('input').disabled = true;
-		il.querySelector('label').onmouseover = () =>{
-			il.querySelector('label').style.cursor = 'not-allowed';
-		}
-		iv.querySelector('input').disabled = true;
-		iv.querySelector('label').onmouseover = () =>{
-			iv.querySelector('label').style.cursor = 'not-allowed';
-		}
-
-		document.querySelector('#editgraph').querySelector('input').onclick = () => {
+		document.querySelector('#editgraph').onclick = () => {
 			if( currentGraph.name === '' )
 			{
 				alert("Select/Create a Graph to Edit");
 				return;
 			}
-			if( document.querySelector('#editgraph').querySelector('input').checked === true )
+			if( document.querySelector('#editgraph').style.backgroundColor === 'violet' )
 			{
-				il.querySelector('input').disabled = false;
-				il.querySelector('label').onmouseover = () =>{
-					il.querySelector('label').style.cursor = 'pointer';
-				}
-				iv.querySelector('input').disabled = false;
-				iv.querySelector('label').onmouseover = () =>{
-					iv.querySelector('label').style.cursor = 'pointer';
-				}
 				editGraph();
 				unhide();
 			}
 			else
 			{
 				blockEdit();
+				hide();
 			}
 		}
 	});
