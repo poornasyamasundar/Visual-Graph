@@ -22,10 +22,10 @@ function drawLine( start, end, lineId )
 {
 	let points = document.querySelectorAll('.point');
 	line = document.querySelector("#"+lineId);
-	var x1 = points[start].getBoundingClientRect().left;
-	var y1 = points[start].getBoundingClientRect().top;
-	var x2 = points[end].getBoundingClientRect().left;
-	var y2 = points[end].getBoundingClientRect().top;
+	var x1 = points[start].offsetLeft;
+	var y1 = points[start].offsetTop;
+	var x2 = points[end].offsetLeft;
+	var y2 = points[end].offsetTop;
 
 	line.style.height = "0px";
 	line.style.width = '0px';
@@ -40,6 +40,15 @@ function drawLine( start, end, lineId )
 	line.style.height = "1px";
 	line.style.transform = "rotate(" + slope + "deg)";
 	line.style.width = distance + "px";
+	var p = document.createElement('p');
+	p.innerHTML = '';
+	p.style.position = 'absolute';
+	p.style.padding = '0';
+	p.style.marginTop = '-14px';
+	p.style.fontSize = '25px';
+	line.appendChild(p);
+	line.querySelector('p').style.marginLeft = distance/2+'px';
+
 	line.style.borderStyle = "solid";
 	line.style.borderWidth = "2px";
 	console.log(line);
@@ -149,7 +158,7 @@ function insertLine()
 						line.id = 'line'+end+''+start;
 					line.start = currentGraph.positions.indexOf(start);
 					line.end = currentGraph.positions.indexOf(end);
-					drawLine( start, end, line.id );
+										drawLine( start, end, line.id );
 					points[start].style.backgroundColor = 'lightblue';
 					currentGraph.adjlist[points[start].innerHTML].neighbours.push(parseInt(points[end].innerHTML));
 					currentGraph.adjlist[points[end].innerHTML].neighbours.push(parseInt(points[start].innerHTML));
@@ -443,11 +452,75 @@ function resetAlgo()
 	}
 }
 
+function showTree( tree )
+{
+	console.log( 'in show tree');
+	let lines = document.querySelector('#lines').querySelectorAll('div');
+	for( let i = 0 ; i < lines.length ; i++ )
+	{
+		lines[i].style.visibility = 'hidden';
+	}
+	for( let i = 0 ; i < tree.positions.length ; i++ )
+	{
+		for( let j = 0 ; j < tree.adjlist[i].neighbours.length ; j++ )
+		{
+			let m = tree.positions[i];
+			let n = tree.positions[tree.adjlist[i].neighbours[j]];
+			if( m < n )
+			{
+				id = 'line'+m+n;
+				document.querySelector('#lines').querySelector('#'+id).querySelector('p').innerHTML = '&#9664;';
+				document.querySelector('#lines').querySelector('#'+id).style.visibility = 'visible';
+			}
+			else
+			{
+				id = 'line'+n+m;
+				document.querySelector('#lines').querySelector('#'+id).querySelector('p').innerHTML = '&#9654;';
+				document.querySelector('#lines').querySelector('#'+id).style.visibility = 'visible';
+			}
+		}
+	}
+}
+
+function hideTree( tree )
+{
+	let lines = document.querySelector('#lines').querySelectorAll('div');
+	for( let i = 0 ; i < lines.length ; i++ )
+	{
+		lines[i].style.visibility = 'visible';
+	}
+	for( let i = 0 ; i < tree.positions.length ; i++ )
+	{
+		for( let j = 0 ; j < tree.adjlist[i].neighbours.length ; j++ )
+		{
+			let m = tree.positions[i];
+			let n = tree.positions[tree.adjlist[i].neighbours[j]];
+			if( m < n )
+			{
+				id = 'line'+m+n;
+				document.querySelector('#lines').querySelector('#'+id).querySelector('p').innerHTML = '';
+			}
+			else
+			{
+				id = 'line'+n+m;
+				document.querySelector('#lines').querySelector('#'+id).querySelector('p').innerHTML = '';
+			}
+		}
+	}
+
+}
+
 function runBFS()
 {
 	for( let i = 0 ; i < currentGraph.adjlist.length ; i++ )
 	{
 		currentGraph.adjlist[i].neighbours.sort();
+	}
+	let tree = new graph();
+	for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+	{
+		tree.positions.push(currentGraph.positions[i]);
+		tree.adjlist.push(new vertex());
 	}
 	let index = -1;
 	let steps = document.querySelector('#bfscode').querySelectorAll('li');
@@ -459,9 +532,19 @@ function runBFS()
 	let vvertex = -1;
 	console.log(currentGraph);
 	console.log(sourcevertex);
-	document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].onclick = () =>
+	document.querySelector('#content').querySelector('ul').querySelector('#showtree').onmouseover = () =>
+	{
+		showTree( tree );
+	}
+	document.querySelector('#content').querySelector('ul').querySelector('#showtree').onmouseout = () =>
+	{
+		hideTree( tree );
+	}
+	document.querySelector('#content').querySelector('ul').querySelector('#nextstep').onclick = () =>
 	{
 		console.log('index = ' + index );
+		console.log('tree');
+		console.log(tree);
 		if( index === 13 )
 			return;
 		resetAlgo();
@@ -516,7 +599,18 @@ function runBFS()
 			steps[4].style.backgroundColor = 'yellow';
 			cvertex = Number(queue.querySelector('li').innerHTML);
 			currentvertex.innerHTML = 'CurrentVertex: '+cvertex;
-			queue.querySelector('li').remove();
+			queue.querySelector('li').style.animation = 'remove 2s linear'
+			queue.querySelector('li').onanimationend = () =>
+			{
+				queue.querySelector('li').remove();
+			}
+			vadjvertex.querySelector('p').innerHTML = cvertex;
+			for( let i = 0 ; i < currentGraph.adjlist[cvertex].neighbours.length ; i++ )
+			{
+				let element = document.createElement('li');
+				element.innerHTML = currentGraph.adjlist[cvertex].neighbours[i];
+				vadjvertex.querySelector('ul').appendChild(element);
+			}
 			index++;
 		}
 		else if( index === 4 )
@@ -528,20 +622,20 @@ function runBFS()
 				{
 					vvertex = 0;
 					index++;
-					vadjvertex.innerHTML = 'v: '+ currentGraph.adjlist[cvertex].neighbours[vvertex];
+					vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex].style.backgroundColor = 'lightblue';
 				}
 			}
 			else if( currentGraph.adjlist[cvertex].neighbours.length-1 > vvertex )
 			{
 				vvertex++;
 				index++;
-				vadjvertex.innerHTML = 'v: '+ currentGraph.adjlist[cvertex].neighbours[vvertex];
+				vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex-1].style.backgroundColor = 'pink';
+				vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex].style.backgroundColor = 'lightblue';
 			}
 			else
 			{
 				vvertex = -1;
 				index = 10;
-				vadjvertex.innerHTML = 'v: ';
 			}
 		}
 		else if( index === 5 )
@@ -565,6 +659,7 @@ function runBFS()
 				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor = 'grey';
 				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d; 
 				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].p = cvertex; 
+				tree.adjlist[cvertex].neighbours.push(currentGraph.adjlist[cvertex].neighbours[vvertex]);
 				let element = document.createElement('li');
 				element.innerHTML = ''+currentGraph.adjlist[cvertex].neighbours[vvertex];
 				queue.appendChild(element);
@@ -578,6 +673,10 @@ function runBFS()
 			steps[8].style.backgroundColor = 'yellow';
 			points[currentGraph.positions[cvertex]].style.backgroundColor = 'black';
 			points[currentGraph.positions[cvertex]].style.color = 'white';
+			for( let i = 0 ; i < currentGraph.adjlist[cvertex].neighbours.length ; i++ )
+			{
+				vadjvertex.querySelector('ul').querySelector('li').remove();
+			}
 			vvertex = -1;
 			index = 2;
 		}
