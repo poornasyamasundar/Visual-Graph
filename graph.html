@@ -18,7 +18,14 @@
 					</ul>
 				</li>
 				<li id = "editgraph">Edit Graph</li>
-				<li id = 'graphName'>GraphName :</li>
+				<li id = 'run'>
+					<div>Run</div>
+					<ul>
+						<li>BFS</li>
+					</ul>
+				</li>
+				<li id = 'algoname'>Algorithm: </li>
+				<li id = 'graphName'>GraphName: </li>
 			</ul>
 		</div>
 		<div id="container">
@@ -50,13 +57,14 @@
 					<li id = 'insertvertex'>Insert Vertex</li>
 					<li id = 'insertline'>Insert Line</li>
 					<li id = 'savegraph'>Save</li>
-					<li id = 'selectsourcevertex'>Select Source Vertex</li>
+					<li id = 'deletegraph'>Delete</li>
 					<li id = 'start'>Start</li>
 					<li id = 'stop'>Stop</li>
 				</ul>
 			</div>
 			<div id = 'content'>
 				<ul>
+					<li id = 'selectsourcevertex'>Select Source Vertex</li>
 					<li>SourceVertex:</li>
 					<li>CurrentVertex:</li>
 					<li>Adj[<p>CurrentVertex</p>]:
@@ -94,13 +102,13 @@
 		</div>
 		<div id = 'newgraph'>
 			<div id = 'box'>
-				<form onsubmit="return submitGraphName()">
+				<form>
 					<label for='graphname'>Enter the Name of the Graph</label>
 					<input type="text" id ='graphname' name = 'name'>
 					<br>
-					<input type = 'submit' value='Create'>
+					<button id = 'submit'>Submit</button>
+					<button id ="cancel">Cancel</button>
 				</form>
-				<button id ="cancel">Cancel</button>
 			</div>
 		</div>
 	</body>

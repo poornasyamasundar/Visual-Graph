@@ -47,7 +47,7 @@ function drawLine( start, end, lineId )
 	p.style.marginTop = '-14px';
 	p.style.fontSize = '25px';
 	line.appendChild(p);
-	line.querySelector('p').style.marginLeft = distance/2+'px';
+	line.querySelector('p').style.marginLeft = distance/2-12+'px';
 
 	line.style.borderStyle = "solid";
 	line.style.borderWidth = "2px";
@@ -242,36 +242,49 @@ function getlist()
 
 function submitGraphName()
 {
-	let newitem = document.createElement('li');
-	newitem.innerHTML = document.querySelector('#newgraph').querySelector('#graphname').value;
-	newitem.id = newitem.innerHTML;
-	if( currentGraph.name === '' )
-		currentGraph = new graph();
-	currentGraph.name = newitem.id;
-	let list = getlist();
-	b = true;
-	for( let i = 0 ; i < list.length ; i++ )
+	document.querySelector('#newgraph').querySelector('#graphname').value = '';
+	document.querySelector('#newgraph').querySelectorAll('button')[0].onclick = () =>
 	{
-		if( list[i].name === newitem.innerHTML )
+		let newitem = document.createElement('li');
+		newitem.innerHTML = document.querySelector('#newgraph').querySelector('#graphname').value;
+		newitem.id = newitem.innerHTML;
+		let list = getlist();
+		b = true;
+		for( let i = 0 ; i < list.length ; i++ )
 		{
-			b = false;
-			break;
+			if( list[i].name === newitem.innerHTML )
+			{
+				b = false;
+				break;
+			}
+		}
+		if( newitem.innerHTML === '' )
+		{
+			alert('Enter valid name');
+			document.querySelector('#newGraph').querySelector('form').value = "";
+		}
+		if( b )
+		{
+			document.querySelector('#load').querySelector('ul').appendChild(newitem);
+			document.querySelector('#newgraph').style.display = 'none';
+			g = new graph();
+			g.name = newitem.innerHTML;
+			list.push(g);
+			localStorage.graphs = JSON.stringify(list);
+			currentGraph = g;
+			loadGraph();
+			document.querySelector('#newgraph').style.display = 'none';
+		}
+		else
+		{
+			alert('This Graph already exists');
+			document.querySelector('#newGraph').querySelector('form').value = "";
 		}
 	}
-	if( b )
+	document.querySelector('#newgraph').querySelectorAll('button')[1].onclick = () =>
 	{
-		document.querySelector('#load').querySelector('ul').appendChild(newitem);
 		document.querySelector('#newgraph').style.display = 'none';
-		list.push(currentGraph);
-		localStorage.graphs = JSON.stringify(list);
-		loadGraph();
 	}
-	else
-	{
-		alert('This Graph already exists');
-		document.querySelector('#newGraph').querySelector('form').value = "";
-	}
-	return false;
 }
 
 function clearCanvas()
@@ -344,10 +357,12 @@ function editGraph()
 	let iv = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0];
 	let il = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1];
 	let save = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2];
+	let del = document.querySelector('#options').querySelector('ul').querySelectorAll('li')[3];
 
 	iv.style.display = 'flex';
 	il.style.display = 'flex';
 	save.style.display = 'flex';
+	del.style.display = 'flex';
 
 	iv.onclick = () =>
 	{
@@ -369,6 +384,25 @@ function editGraph()
 		il.style.backgroundColor = 'tomato';
 		alert('Graph successfully saved');
 		saveGraph();
+	}
+	del.onclick = () =>
+	{
+		il.style.backgroundColor = 'tomato';
+		iv.style.backgroundColor = 'tomato';
+		let list = getlist();
+		for( let i = 0 ; i < list.length ; i++ )
+		{
+			if( list[i].name === currentGraph.name )
+			{
+				document.querySelector('#load').querySelector('ul').querySelectorAll('li')[i+1].remove();
+				currentGraph = new graph();
+				list.splice(i, 1);
+				localStorage.graphs = JSON.stringify(list);
+				blockEdit();
+				clearCanvas();
+				return;
+			}
+		}
 	}
 }
 
@@ -407,13 +441,14 @@ function selectSourceVertex()
 	{
 		points[i].onclick = () =>
 		{
-			if( document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].querySelector('input').checked === false )
+			if( document.querySelector('#selectsourcevertex').style.backgroundColor === 'lightgreen' )
 				return;
-			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[0].innerHTML = 'SourceVertex: ' + currentGraph.positions.indexOf(i);
-			document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].querySelector('input').checked = false;
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex: ' + currentGraph.positions.indexOf(i);
+			document.querySelector('#selectsourcevertex').style.backgroundColor = 'lightgreen';
+			document.querySelector('#selectsourcevertex').style.display = 'none';
 			sourcevertex = i;
 			points[i].style.backgroundColor = 'green';
-			b = true;
+			return;
 		}
 	}
 }
@@ -424,9 +459,11 @@ function blockEdit()
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0].style.display = 'none';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.display = 'none';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].style.display = 'none';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[3].style.display = 'none';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[0].style.backgroundColor = 'tomato';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[1].style.backgroundColor = 'tomato';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[2].style.backgroundColor = 'tomato';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[3].style.backgroundColor = 'tomato';
 }
 
 function resetAlgo()
@@ -508,6 +545,69 @@ function createToolTips()
 	}
 }
 
+function RunAlgorithm( algo )
+{
+	if( currentGraph.name == '' )
+	{
+		alert('Select a graph to run the Algorithm');
+		return;
+	}
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[4].style.display = 'flex';
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[5].style.display = 'flex';
+	document.querySelector('#algorithm').style.display = 'initial';
+	document.querySelector('#headings').querySelector('#reset').style.display = 'none';
+	document.querySelector('#headings').querySelector('#clear').style.display = 'none';
+	document.querySelector('#headings').querySelector('#load').style.display = 'none';
+	document.querySelector('#headings').querySelector('#editgraph').style.display = 'none';
+	document.querySelector('#headings').querySelector('#run').style.display = 'none';
+	document.querySelector('#headings').querySelector('#algoname').style.display = 'flex';
+	document.querySelector('#headings').querySelector('#algoname').innerHTML = 'Algorithm: '+algo;
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[4].onclick = () =>
+	{
+		document.querySelector('#content').style.display = 'initial';
+		document.querySelector('#selectsourcevertex').style.display = 'flex';
+		clearCanvas();
+		if( currentGraph.name != '' )
+			loadGraph( currentGraph.name );
+		blockEdit();
+		resetAlgo();
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].innerHTML = 'CurrentVertex:';
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].innerHTML = 'Adj[<p>CurrentVertex</p>]:<ul></ul>';
+		document.querySelector('#queue').querySelector('ul').innerHTML = '';
+		sourcevertex = -1;
+		document.querySelector('#selectsourcevertex').onclick = () =>
+		{
+			document.querySelector('#selectsourcevertex').style.backgroundColor = 'green';
+			selectSourceVertex();
+		}
+		runBFS();
+	}
+	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[5].onclick = () =>
+	{
+		document.querySelector('#content').style.display = 'none';
+		document.querySelector('#options').querySelector('ul').querySelectorAll('li')[4].style.display = 'none';
+		document.querySelector('#options').querySelector('ul').querySelectorAll('li')[5].style.display = 'none';
+		document.querySelector('#algorithm').style.display = 'none';
+		document.querySelector('#headings').querySelector('#reset').style.display = 'flex';
+		document.querySelector('#headings').querySelector('#clear').style.display = 'flex';
+		document.querySelector('#headings').querySelector('#load').style.display = 'inline-block';
+		document.querySelector('#headings').querySelector('#editgraph').style.display = 'flex';
+		document.querySelector('#headings').querySelector('#run').style.display = 'inline-block';
+		document.querySelector('#headings').querySelector('#algoname').style.display = 'none';
+		clearCanvas();
+		if( currentGraph.name != '' )
+			loadGraph( currentGraph.name );
+		blockEdit();
+		resetAlgo();
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].innerHTML = 'CurrentVertex:';
+		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].innerHTML = 'Adj[<p>CurrentVertex</p>]:<ul></ul>';
+		document.querySelector('#queue').querySelector('ul').innerHTML = '';
+		sourcevertex = -1;
+	}
+}
+
 function runBFS()
 {
 	for( let i = 0 ; i < currentGraph.adjlist.length ; i++ )
@@ -523,8 +623,8 @@ function runBFS()
 	let index = -1;
 	let steps = document.querySelector('#bfscode').querySelectorAll('li');
 	let points = document.querySelectorAll('.point');
-	let currentvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1];
-	let vadjvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2];
+	let currentvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2];
+	let vadjvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3];
 	let queue = document.querySelector('#BFS').querySelector('#queue').querySelector('ul');
 	let cvertex = -1;
 	let vvertex = -1;
@@ -547,6 +647,11 @@ function runBFS()
 	}
 	document.querySelector('#content').querySelector('ul').querySelector('#nextstep').onclick = () =>
 	{
+		if( sourcevertex === -1 )
+		{
+			alert('Select a source vertex');
+			return;
+		}
 		console.log('index = ' + index );
 		console.log('tree');
 		console.log(tree);
@@ -687,7 +792,8 @@ function runBFS()
 		}
 		else if( index == 8 )
 		{
-			return;
+			steps[9].style.backgroundColor = 'yellow';
+			showTree(tree);
 		}
 	}
 }
@@ -707,12 +813,28 @@ document.addEventListener('DOMContentLoaded', function()
 				}
 			}
 		}
+		document.querySelector('#run').onmouseover = () =>
+		{
+			document.querySelector('#run').querySelector('ul').style.display = 'initial';
+			for( let i = 0 ; i < 1 ; i++ )
+			{
+				document.querySelector('#run').querySelector('ul').querySelectorAll('li')[i].onclick = () =>
+				{
+					RunAlgorithm(document.querySelector('#run').querySelector('ul').querySelectorAll('li')[i].innerHTML);
+				}	
+			}
+		}
+		document.querySelector('#run').onmouseout = () =>
+		{
+			document.querySelector('#run').querySelector('ul').style.display = 'none';
+		}
 		document.querySelector('#load').onmouseout = () => {
     			document.querySelector('#load').querySelector('ul').style.display = 'none';
 		}
 		document.querySelector('#load').querySelector('ul').querySelectorAll('li')[0].onclick = () =>
 		{
 			document.querySelector('#newgraph').style.display = 'initial';
+			submitGraphName();
 		}
 		document.querySelector('#clear').onclick = () =>
 		{
@@ -740,13 +862,6 @@ document.addEventListener('DOMContentLoaded', function()
 				return;
 			}
 		}
-		document.querySelector('#start').onclick = ()=>
-		{
-			if( document.querySelector('#start').checked === true )
-			{
-				runBFS();
-			}
-		}
 		if( !localStorage.graphs )
 		{
 			localStorage.graphs = JSON.stringify([]);
@@ -762,7 +877,6 @@ document.addEventListener('DOMContentLoaded', function()
 			if( document.querySelector('#editgraph').style.backgroundColor === 'violet' )
 			{
 				editGraph();
-				unhide();
 			}
 			else
 			{
