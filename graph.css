@@ -23,6 +23,7 @@ body
 	grid-gap: 10px;
 	background-color: pink;
 	font-family: sans-serif;
+	user-select: none;
 }
 #container
 {
@@ -118,6 +119,7 @@ body
 }
 #content > ul > li
 {
+	display: none;
 	background-color: lightgreen;
 	border-style: solid;
 	border-color: black;
@@ -126,13 +128,12 @@ body
 	font-weight: bold;
 	margin-bottom: -4px;
 	height: 40px;
-	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 #content > ul > li:nth-child(4)
 {
-	display: block;
+	display: none;
 	height: 65px;
 	overflow: auto;
 }
@@ -172,6 +173,10 @@ body
 	overflow: auto;
 	display: none;
 }
+#algorithm > div
+{
+	display: none;
+}
 #algorithm > #BFS > #queue
 {
 	background-color: lightyellow;
@@ -183,6 +188,7 @@ body
 	border-width: 4px;
 	margin-top: -4px;
 	margin-left: -4px;
+	display: block;
 }
 #algorithm > #BFS > #queue > p
 {
@@ -195,8 +201,7 @@ body
 	border-style: solid;
 	border-color: black;
 	border-width: 2px;
-	width: 40px;
-	height: 40px;
+	padding: 10px;
 	float: left;
 	display: flex;
 	justify-content: center;
@@ -208,6 +213,90 @@ body
 	margin-top: 10px;
 }
 #bfscode > li
+{
+	margin-top: -2px;
+	margin-left: -2px;
+	font-size: 20px;
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-style: italic;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+}
+#dfscode
+{
+	background-color: orange;
+	margin-top: 10px;
+}
+#dfscode > li
+{
+	margin-top: -2px;
+	margin-left: -2px;
+	font-size: 20px;
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-style: italic;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+}
+#algorithm > #MST > #edges, #sets
+{
+	background-color: lightyellow;
+	height: 120px;
+	font-size: 20px;
+	font-weight: bold;
+	border-style: solid;
+	border-color: black;
+	border-width: 4px;
+	margin-top: -4px;
+	margin-left: -4px;
+	display: block;
+	overflow: auto;
+}
+#algorithm > #MST > #edges > p
+{
+	margin: 0px;
+	height: 25px;
+}
+#algorithm > #MST > #sets > p
+{
+	margin: 0px;
+	height: 25px;
+}
+#algorithm > #MST > #edges > ul > li
+{
+	background-color: orange;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	padding: 10px;
+	float: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#algorithm > #MST > #sets > ul > li
+{
+	background-color: orange;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	padding: 10px;
+	float: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}	
+#mstcode
+{
+	background-color: orange;
+	margin-top: 10px;
+}
+#mstcode > li
 {
 	margin-top: -2px;
 	margin-left: -2px;
@@ -234,7 +323,7 @@ body
 }
 #newgraph #box
 {
-	height: 120px;
+	height: 180px;
 	width: 600px;
 	border-width: 2px;
 	border-style: solid;
@@ -253,7 +342,7 @@ body
 	height: 30px;
 	font-size: 20px;
 }
-#newgraph button
+#newgraph button 
 {
 	margin-top: 10px;
 	border-width:2px;
@@ -263,7 +352,12 @@ body
 	font-size: 20px;
 	text-align: center;
 	height: 40px;
-	width: 100px;
+	width: 120px;
+}
+button#undirected, button#unweighted
+{
+	background-color: blue;
+	color: white;
 }
 #lines
 {
@@ -274,6 +368,25 @@ body
 	position: absolute;
 	background-color: black;
 	border-color: black;
+}
+#lines > p
+{
+	position: absolute;
+	border-radius: 5px;
+	padding: 3px;
+	background-color: #333;
+	color: white;
+}
+#lines > p::before
+{
+	content : '';
+	position: absolute;
+	left: 50%;
+	bottom: 100%;
+	margin-left : -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent transparent #333 transparent;
 }
 ul
 {
@@ -309,6 +422,37 @@ ul
 	width: 160px;
 	text-align: center;
 	float: left;
+}
+#headings > #graphName > div
+{
+	display: none;
+	width: 150px;
+	height: 70px;
+	background-color: #555;
+	color: white;
+	text-align: center;
+	border-radius: 10px;
+	padding: 5px 0;
+	position: absolute;
+	margin-top: 170px;
+	z-index: 3;
+	transition: opacity 0.3s;
+	font-size: 15px;
+}
+#headings > #graphName > div::before
+{
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -10px;
+	border-width: 10px;
+	border-style: solid;
+	border-color: transparent transparent #555 transparent;
+}
+#headings >#graphName:hover div
+{
+	display: initial;
 }
 #headings > #load
 {
@@ -434,8 +578,8 @@ ul
 #lines div:hover
 {
 	background-color: green;
+	color: green;
 	border-color: green;
-	transform: scale(2);
 	cursor: pointer;
 }
 #nextstep:hover, #showtree:hover, #selectsourcevertex:hover

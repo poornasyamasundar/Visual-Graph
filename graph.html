@@ -22,10 +22,12 @@
 					<div>Run</div>
 					<ul>
 						<li>BFS</li>
+						<li>DFS</li>
+						<li>MST</li>
 					</ul>
 				</li>
 				<li id = 'algoname'>Algorithm: </li>
-				<li id = 'graphName'>GraphName: </li>
+				<li id = 'graphName'>GraphName: <div></div></li>
 			</ul>
 		</div>
 		<div id="container">
@@ -56,6 +58,7 @@
 				<ul>
 					<li id = 'insertvertex'>Insert Vertex</li>
 					<li id = 'insertline'>Insert Line</li>
+					<li id = 'changeweight'>Change Weight</li>
 					<li id = 'savegraph'>Save</li>
 					<li id = 'deletegraph'>Delete</li>
 					<li id = 'start'>Start</li>
@@ -84,21 +87,65 @@
 					</ul>
 				</div>
 				<ul id = 'bfscode'>
-					<li>for each vertex u in graph<br>&emsp;&emsp;u.color = WHITE<br>&emsp;&emsp;u.d = -1<br>&emsp;&emsp;u.p = NIL</li>
+					<li>for each vertex u &#8712; G<br>&emsp;&emsp;u.color = WHITE<br>&emsp;&emsp;u.d = -1<br>&emsp;&emsp;u.p = NIL</li>
 					<li>source.color = GRAY<br>source.d = 0<br>s.p = NIL</li>
 					<li>ENQUEUE(source)</li>
-					<li>while( Queue != NIL )</li>
+					<li>while( Queue &ne; NIL )</li>
 					<li>&emsp;&emsp;currentVertex = DEQUEUE()</li>
-					<li>&emsp;&emsp;for v in adj[u]</li>
-					<li>&emsp;&emsp;&emsp;&emsp;if v.color == WHITE</li>
+					<li>&emsp;&emsp;for each v &#8712; adj[u]</li>
+					<li>&emsp;&emsp;&emsp;&emsp;if( v.color == WHITE )</li>
 					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.color = GRAY
-					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.d = u.d + 1
-					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.p = u
-					<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;ENQUEUE(v)</li>
+						<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.d = u.d + 1
+						<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.p = u
+						<br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;ENQUEUE(v)</li>
 					<li>&emsp;&emsp;currentVertex.color = BLACK</li>
 					<li>Print BFS Tree</li>
 				</ul>
 			</div>
+			<div id = 'DFS'>
+				<ul id = 'dfscode'>
+					<li style = 'backgroun-color = red' >Time = </li>
+					<li>for each vertex u &#8712; G<br>&emsp;&emsp;u.color = WHITE<br>&emsp;&emsp;u.p = NIL</li>
+					<li>time = 0</li>
+					<li>DFS-Visit(sourcevertex)</li>
+					<li>Print DFS Tree</li>
+					<li><br><br></li>
+					<li>DFS-Visit(currentVertex)</li>
+					<li>&emsp;&emsp;time = time + 1</li>
+					<li>&emsp;&emsp;currentVertex.d = time</li>
+					<li>&emsp;&emsp;currentVertex.color = GRAY</li>
+					<li>&emsp;&emsp;for each vertex v &#8712; adj[currentVertex]</li>
+					<li>&emsp;&emsp;&emsp;&emsp;if( v.color == WHITE )</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.p = currentVertex</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;DFS-Visit(v)</li>
+					<li>&emsp;&emsp;currentVertex.color = BLACK</li>
+					<li>&emsp;&emsp;time = time + 1 </li>
+					<li>&emsp;&emsp;currentVertex.f = time</li>
+				</ul>
+			</div>
+			<div id = 'MST'>
+				<div id = 'edges'>
+					<p>Edges</p>
+					<ul>
+					</ul>
+				</div>
+				<div id = 'sets'>
+					<p>Sets</p>
+					<ul>
+					</ul>
+				</div>
+				<ul id = 'mstcode'>
+					<li>A = NULL</li>
+					<li>for each vertex v in G<br>&emsp;&emsp;Make-Set(v)</li>
+					<li>Sort Edges According to their Weights</li>
+					<li>for each edge(u, v) &#8712; G.E( in the above sorted order)</li>
+					<li>&emsp;&emsp;if( Find-Set(u) &ne;  Find-Set(v) )</li>
+					<li>&emsp;&emsp;&emsp;&emsp;A = A &cup; {(u, v)}</li>
+					<li>&emsp;&emsp;&emsp;&emsp;Union(u, v)</li>
+					<li>Print(A)</li>
+				</ul>
+			</div>
+
 		</div>
 		<div id = 'newgraph'>
 			<div id = 'box'>
@@ -106,9 +153,15 @@
 					<label for='graphname'>Enter the Name of the Graph</label>
 					<input type="text" id ='graphname' name = 'name'>
 					<br>
-					<button id = 'submit'>Submit</button>
-					<button id ="cancel">Cancel</button>
 				</form>
+				<button id = 'directed'>Directed</button>
+				<button id = 'undirected'>UnDirected</button>
+				<button id = 'weighted'>Weighted</button>
+				<button id = 'unweighted'>UnWeighted</button>
+				<br>
+				<button id = 'submit'>Submit</button>
+				<button id ="cancel">Cancel</button>
+
 			</div>
 		</div>
 	</body>
