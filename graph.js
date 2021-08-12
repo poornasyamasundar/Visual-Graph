@@ -78,7 +78,7 @@ function drawLine( start, end, lineId )
 		{
 			document.querySelector('#weight'+lineId).style.display = 'none';
 		}
-		
+
 	}
 	console.log(line);
 }
@@ -718,6 +718,22 @@ function resetAlgo( algo )
 			steps[i].style.backgroundColor = 'orange';
 		}
 	}
+	else if( algo === 'dij' )
+	{
+		let steps = document.querySelector('#dijcode').querySelectorAll('li');
+		for(let i = 0 ; i < steps.length ; i++ )
+		{
+			steps[i].style.backgroundColor = 'orange';
+		}
+	}
+	else if( algo === 'gc' )
+	{
+		let steps = document.querySelector('#gccode').querySelectorAll('li');
+		for(let i = 0 ; i < steps.length ; i++ )
+		{
+			steps[i].style.backgroundColor = 'orange';
+		}
+	}
 }
 
 
@@ -815,7 +831,7 @@ function hideTree( tree )
 function createToolTips( algo )
 {
 	let points = document.querySelectorAll('.point');
-	if( algo == 'bfs' )
+	if( algo === 'bfs' )
 	{
 		for( let i = 0 ; i < currentGraph.positions.length ; i++ )
 		{
@@ -824,13 +840,23 @@ function createToolTips( algo )
 			points[currentGraph.positions[i]].appendChild(tooltip);
 		}
 	}
-	else if( algo = 'dfs' )
+	else if( algo === 'dfs' )
 	{
 		for( let i = 0 ; i < currentGraph.positions.length ; i++ )
 		{
 			let tooltip = document.createElement('div');
 			tooltip.innerHTML = 'd: <i>-1</i><br>f: <i>-1</i><br>p: <i>nil</i>';
 			points[currentGraph.positions[i]].appendChild(tooltip);
+		}
+	}
+	else if( algo === 'dij' )
+	{
+		for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+		{
+			let point = points[currentGraph.positions[i]];
+			let tooltip = document.createElement('div');
+			tooltip.innerHTML = 'd: '+ point.d + '<br>p: '+point.p;
+			point.appendChild(tooltip);
 		}
 	}
 }
@@ -855,7 +881,16 @@ function RunAlgorithm( algo )
 	document.querySelector('#headings').querySelector('#run').style.display = 'none';
 	document.querySelector('#headings').querySelector('#algoname').style.display = 'flex';
 	document.querySelector('#headings').querySelector('#algoname').innerHTML = 'Algorithm: '+algo;
-	document.querySelector('#'+algo).style.display = 'initial';
+	if( algo === 'Breadth First Search' )
+		document.querySelector('#BFS').style.display = 'initial';
+	else if( algo === 'Depth First Search' )
+		document.querySelector('#DFS').style.display = 'initial';
+	else if( algo === "Minimum Spanning Tree (Prim's)" )
+		document.querySelector('#MST').style.display = 'initial';
+	else if( algo === "Shortest Path (Dijkstra's)" )
+		document.querySelector('#DIJ').style.display = 'initial';
+	else if( algo === "Graph Coloring (Welsh-Powell)" )
+		document.querySelector('#GC').style.display = 'initial';
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[5].onclick = () =>
 	{
 		document.querySelector('#content').style.display = 'initial';
@@ -865,7 +900,7 @@ function RunAlgorithm( algo )
 		blockEdit();
 		resetAlgo();
 		sourcevertex = -1;
-		if( algo == 'BFS' )
+		if( algo == 'Breadth First Search' )
 		{
 			runBFS();
 			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';
@@ -884,7 +919,7 @@ function RunAlgorithm( algo )
 				selectSourceVertex();
 			}
 		}
-		else if( algo === 'DFS' )
+		else if( algo === 'Depth First Search' )
 		{
 			runDFS();
 			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';
@@ -902,13 +937,47 @@ function RunAlgorithm( algo )
 				selectSourceVertex();
 			}
 		}
-		else if( algo === 'MST' )
+		else if( algo === "Minimum Spanning Tree (Prim's)" )
 		{
+			resetAlgo( 'mst' );
 			document.querySelector('#edges').querySelector('ul').innerHTML = '';
 			document.querySelector('#sets').querySelector('ul').innerHTML = '';
 			runMST();
 			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[4].style.display = 'flex';
 			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[5].style.display = 'flex';
+		}
+		else if( algo === "Shortest Path (Dijkstra's)" )
+		{
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';	
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].innerHTML = 'CurrentVertex:';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].innerHTML = 'Adj[<p>CurrentVertex</p>]:<ul></ul>';
+			document.querySelector('#queue').querySelector('ul').innerHTML = '';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[0].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].style.display = 'block';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[4].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[5].style.display = 'flex';
+			document.querySelector('#selectsourcevertex').onclick = () =>
+			{
+				document.querySelector('#selectsourcevertex').style.backgroundColor = 'green';
+				selectSourceVertex();
+			}
+			runDIJ();
+		}
+		else if( algo == 'Graph Coloring (Welsh-Powell)' )
+		{
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'u:';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].innerHTML = 'v: ';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].innerHTML = '<p>v</p>.neighbours:<ul></ul>';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[4].innerHTML = 'Colorable: ';
+			document.querySelector('#vertices').querySelector('ul').innerHTML = '';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].style.display = 'block';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[4].style.display = 'flex';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[5].style.display = 'flex';
+			runGC();
 		}
 	}
 	document.querySelector('#options').querySelector('ul').querySelectorAll('li')[6].onclick = () =>
@@ -920,6 +989,8 @@ function RunAlgorithm( algo )
 		document.querySelector('#BFS').style.display = 'none';
 		document.querySelector('#DFS').style.display = 'none';
 		document.querySelector('#MST').style.display = 'none';
+		document.querySelector('#DIJ').style.display = 'none';
+		document.querySelector('#GC').style.display = 'none';
 		document.querySelector('#headings').querySelector('#reset').style.display = 'flex';
 		document.querySelector('#headings').querySelector('#clear').style.display = 'flex';
 		document.querySelector('#headings').querySelector('#load').style.display = 'inline-block';
@@ -934,6 +1005,7 @@ function RunAlgorithm( algo )
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].innerHTML = 'SourceVertex:';
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].innerHTML = 'CurrentVertex:';
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3].innerHTML = 'Adj[<p>CurrentVertex</p>]:<ul></ul>';
+			document.querySelector('#content').querySelector('ul').querySelectorAll('li')[4].innerHTML = 'Show Tree';
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[0].style.display = 'none';
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1].style.display = 'none';
 		document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2].style.display = 'none';
@@ -1037,7 +1109,7 @@ function runBFS()
 			steps[4].style.backgroundColor = 'yellow';
 			cvertex = Number(queue.querySelector('li').innerHTML);
 			currentvertex.innerHTML = 'CurrentVertex: '+cvertex;
-			queue.querySelector('li').style.animation = 'remove 2s linear'
+			queue.querySelector('li').style.animation = 'remove 2s linear';
 			queue.querySelector('li').onanimationend = () =>
 			{
 				queue.querySelector('li').remove();
@@ -1099,17 +1171,17 @@ function runBFS()
 		else if( index == 6 )
 		{
 			steps[7].style.backgroundColor = 'yellow';
-				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor = 'grey';
-				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d+1; 
-				points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].querySelector('div').innerHTML = 'd: '+(points[currentGraph.positions[cvertex]].d+1)+'<br>p: '+cvertex; 
-				tree.adjlist[cvertex].neighbours.push(currentGraph.adjlist[cvertex].neighbours[vvertex]);
-				let element = document.createElement('li');
-				element.innerHTML = ''+currentGraph.adjlist[cvertex].neighbours[vvertex];
-				queue.appendChild(element);
-				if( currentGraph.adjlist[cvertex].neighbours.length-1 === vvertex )
-					index = 7;
-				else
-					index = 4;
+			points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].style.backgroundColor = 'grey';
+			points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d = points[currentGraph.positions[cvertex]].d+1; 
+			points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].querySelector('div').innerHTML = 'd: '+(points[currentGraph.positions[cvertex]].d+1)+'<br>p: '+cvertex; 
+			tree.adjlist[cvertex].neighbours.push(currentGraph.adjlist[cvertex].neighbours[vvertex]);
+			let element = document.createElement('li');
+			element.innerHTML = ''+currentGraph.adjlist[cvertex].neighbours[vvertex];
+			queue.appendChild(element);
+			if( currentGraph.adjlist[cvertex].neighbours.length-1 === vvertex )
+				index = 7;
+			else
+				index = 4;
 		}
 		else if( index == 7 )
 		{
@@ -1546,13 +1618,490 @@ function runMST()
 	}
 
 }
+
+function runDIJ()
+{
+	let tree = new graph();
+	for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+	{
+		tree.positions.push(currentGraph.positions[i]);
+		tree.adjlist.push( new vertex() );
+	}
+	let index = -1;
+	let steps = document.querySelector('#dijcode').querySelectorAll('li');
+	let points = document.querySelectorAll('.point');
+	let currentvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2];
+	let vadjvertex = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3];
+	let queue = document.querySelector('#DIJ').querySelector('#queue').querySelector('ul');
+	let cvertex = -1;
+	let vvertex = -1;
+	console.log(currentGraph);
+	console.log(sourcevertex);
+	let showtree = document.querySelector('#content').querySelector('ul').querySelector('#showtree');
+	showtree.onclick = () =>
+	{
+		if( showtree.innerHTML === 'Show Tree' )
+		{
+			showTree( tree );
+			showtree.innerHTML = 'Hide Tree';
+		}
+		else if( showtree.innerHTML === 'Hide Tree')
+		{
+			hideTree( tree );
+			showtree.innerHTML = 'Show Tree';
+		}
+	}
+	document.querySelector('#content').querySelector('ul').querySelector('#nextstep').onclick = () =>
+	{
+		if( sourcevertex === -1 )
+		{
+			alert('Select a source vertex');
+			return;
+		}
+		console.log('index = ' + index );
+		console.log('tree');
+		console.log(tree);
+		resetAlgo( 'dij' );
+		if( index === -1 )
+		{
+			steps[0].style.backgroundColor = 'yellow';
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				points[currentGraph.positions[i]].style.backgroundColor = 'white';
+				points[currentGraph.positions[i]].d = 1.7976931348623157E+10308;
+				points[currentGraph.positions[i]].p = -1;
+			}
+			createToolTips('dij');
+			index++;
+		}
+		else if( index === 0 )
+		{
+			steps[1].style.backgroundColor = 'yellow';
+			points[sourcevertex].d = 0;
+			points[sourcevertex].querySelector('div').innerHTML = 'd: '+points[sourcevertex].d +  '<br>p: '+points[sourcevertex].p;
+			index++;
+		}
+		else if( index === 1 )
+		{
+			steps[2].style.backgroundColor = 'yellow';
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				let element = document.createElement('li');
+				element.innerHTML = i+'<br>'+points[currentGraph.positions[i]].d;
+				queue.appendChild(element);
+			}
+			index++;
+		}
+		else if( index === 2 )
+		{
+			steps[3].style.backgroundColor = 'yellow';
+			b = false;
+			for( let i = 0 ; i < queue.querySelectorAll('li').length ; i++ )
+			{
+				if( queue.querySelectorAll('li')[i].style.display != 'none' )
+				{
+					b = true;
+					break;
+				}
+			}
+			if( !b )
+			{
+				index = 9;
+				return;
+			}
+			index++;
+		}
+		else if( index === 3 )
+		{
+			steps[4].style.backgroundColor = 'yellow';
+
+			let minindex = 0;
+			let min = 1.7976931348623157E+10308;
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				if( points[currentGraph.positions[i]].style.backgroundColor === 'white' )
+				{
+					if( points[currentGraph.positions[i]].d <= min )
+					{
+						min = points[currentGraph.positions[i]].d;
+						minindex = i;
+					}
+				}
+			}
+			cvertex = minindex;
+			currentvertex.innerHTML = 'CurrentVertex: '+cvertex;
+			queue.querySelectorAll('li')[minindex].style.animation = 'remove 1s linear';
+			queue.querySelectorAll('li')[minindex].onanimationend = () =>
+			{
+				queue.querySelectorAll('li')[minindex].style.display = 'none';
+			}
+
+			vadjvertex.querySelector('p').innerHTML = cvertex;
+			vadjvertex.querySelector('ul').innerHTML = '';
+			for( let i = 0 ; i < currentGraph.adjlist[cvertex].neighbours.length ; i++ )
+			{
+				let element = document.createElement('li');
+				element.innerHTML = currentGraph.adjlist[cvertex].neighbours[i];
+				vadjvertex.querySelector('ul').appendChild(element);
+			}
+			index++;
+		}
+		else if( index === 4 )
+		{
+			steps[5].style.backgroundColor = 'yellow';
+			points[currentGraph.positions[cvertex]].style.backgroundColor = 'black';
+			points[currentGraph.positions[cvertex]].style.color = 'white';
+			index++;
+		}
+		else if( index === 5 )
+		{
+			steps[6].style.backgroundColor = 'yellow';
+			if( vvertex === -1 )
+			{
+				if( currentGraph.adjlist[cvertex].neighbours.length != 0 )
+				{
+					vvertex = 0;
+					index++;
+					vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex].style.backgroundColor = 'lightblue';
+				}
+				else
+				{
+					vvertex = -1;
+					index = 2;
+				}
+			}
+			else if( currentGraph.adjlist[cvertex].neighbours.length-1 > vvertex )
+			{
+				vvertex++;
+				index++;
+				vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex-1].style.backgroundColor = 'pink';
+				vadjvertex.querySelector('ul').querySelectorAll('li')[vvertex].style.backgroundColor = 'lightblue';
+			}
+			else
+			{
+				vvertex = -1;
+				index = 2;
+			}
+		}
+		else if( index === 6 )
+		{
+			steps[7].style.backgroundColor = 'yellow';
+			if( currentGraph.weighted )
+			{
+				if( points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d > (points[currentGraph.positions[cvertex]].d + currentGraph.adjlist[cvertex].weights[vvertex] ) )
+					index++;
+				else
+					index = 5;
+			}
+			else
+			{
+				if( points[currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]]].d > (points[currentGraph.positions[cvertex]].d + 1 ) )
+					index++;
+				else
+					index = 5;
+			}
+		}
+		else if( index === 7 )
+		{
+			steps[8].style.backgroundColor = 'yellow';
+			let y = currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]];
+			if( currentGraph.weighted )
+				points[y].d = (points[currentGraph.positions[cvertex]].d + currentGraph.adjlist[cvertex].weights[vvertex] );
+			else
+				points[y].d = (points[currentGraph.positions[cvertex]].d + 1 );
+			points[y].querySelector('div').innerHTML = 'd: '+points[y].d + '<br>p: '+ points[y].p;
+
+			queue.querySelectorAll('li')[currentGraph.adjlist[cvertex].neighbours[vvertex]].innerHTML = currentGraph.adjlist[cvertex].neighbours[vvertex] + '<br>' + points[y].d;
+			index++;
+		}
+		else if( index === 8 )
+		{
+			steps[9].style.backgroundColor = 'yellow';
+			let y = currentGraph.positions[currentGraph.adjlist[cvertex].neighbours[vvertex]];
+			points[y].p = cvertex;
+			points[y].querySelector('div').innerHTML = 'd: ' + points[y].d + '<br>p: ' + points[y].p;
+			index = 5;
+			tree.adjlist[cvertex].neighbours.push(currentGraph.adjlist[cvertex].neighbours[vvertex] );
+		}
+		else if( index === 9 )
+		{
+			steps[10].style.backgroundColor = 'yellow';
+			showTree(tree);
+		}
+	}
+}
+
+function getNeighbours()
+{
+	let list = [];
+	if( currentGraph.directed )
+	{
+
+		for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+		{
+			let l = {index: i, n:[]};
+			for( let j = 0 ; j < currentGraph.adjlist[i].neighbours.length ; j++ )
+			{
+				l.n.push(currentGraph.adjlist[i].neighbours[j]);
+			}
+			for( let j = 0 ; j < currentGraph.positions.length ; j++ )
+			{
+				for( let k = 0 ; k < currentGraph.adjlist[j].neighbours.length ; k++ )
+				{
+					if( i === currentGraph.adjlist[j].neighbours[k] )
+					{
+						l.n.push(j);
+					}
+				}
+			}
+			list.push(l);
+		}
+	}
+	else
+	{
+		for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+		{
+			let l = {index: i, n:[]};
+			for( let j = 0 ; j < currentGraph.adjlist[i].neighbours.length ; j++ )
+			{
+				l.n.push(currentGraph.adjlist[i].neighbours[j]);
+			}
+			list.push(l);
+		}
+	}
+	return list;
+}
+
+function sortDegree( a, b )
+{
+	if( a.n.length < b.n.length )
+		return 1;
+	else 
+		return -1;
+	return 0;
+}
+
+function runGC()
+{
+	let index = -1;
+	let steps = document.querySelector('#gccode').querySelectorAll('li');
+	let points = document.querySelectorAll('.point');
+	let u = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[1];
+	let v = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[2];
+	let vneighbours = document.querySelector('#content').querySelector('ul').querySelectorAll('li')[3];
+	let vertices = document.querySelector('#GC').querySelector('#vertices').querySelector('ul');
+	let uv = -1;
+	let vv = -1;
+	let counter1 = -1;
+	let counter2 = -1;
+	let colors = ['Aqua', 'blue', 'brown', 'chartreuse', 'chocolate', 'DarkMagenta', 'Fuchsia', 'Indigo'];
+	neighbours = getNeighbours();
+	console.log(neighbours);
+	console.log(currentGraph);
+	for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+	{
+		points[currentGraph.positions[i]].style.backgroundColor = 'white';
+	}
+	document.querySelector('#content').querySelector('ul').querySelector('#nextstep').onclick = () =>
+	{
+		console.log('index = ' + index );
+		resetAlgo('gc');
+		if( index === -1 )
+		{
+			steps[0].style.backgroundColor = 'yellow';
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				let element = document.createElement('li');
+				element.innerHTML = neighbours[i].index + '<br>deg: '+neighbours[i].n.length;
+				vertices.appendChild(element);
+			}
+			index++;
+		}
+		else if( index === 0 )
+		{
+			steps[1].style.backgroundColor = 'yellow';
+			neighbours.sort( sortDegree );
+			for( let i = 0 ; i < currentGraph.positions.length ; i++ )
+			{
+				vertices.querySelectorAll('li')[i].innerHTML = neighbours[i].index + '<br>deg: '+neighbours[i].n.length;
+			}
+			index++;
+		}
+		else if( index === 1 )
+		{
+			steps[2].style.backgroundColor = 'yellow';
+			if( vertices.querySelectorAll('li').length === 0 )
+			{
+				index = 13;
+				return;
+			}
+			else
+			{
+				index++;
+			}
+		}
+		else if( index === 2 )
+		{
+			steps[3].style.backgroundColor = 'yellow';
+			uv = neighbours.splice(0,1)[0].index;
+			console.log(uv);
+			u.innerHTML = 'u: '+uv;
+			vertices.querySelector('li').remove();
+			index++;
+		}
+		else if( index === 3 )
+		{
+			steps[4].style.backgroundColor = 'yellow';
+			points[currentGraph.positions[uv]].style.backgroundColor = colors[0];
+			colors.splice(0, 1);
+			index++;
+		}
+		else if( index === 4 )
+		{
+			steps[5].style.backgroundColor = 'yellow';
+			if( counter1 === -1 )
+			{
+				if( vertices.querySelectorAll('li').length != 0 )
+				{
+					counter1 = 0;
+					index++;
+					v.innerHTML = 'v: '+neighbours[counter1].index;
+					vv = neighbours[counter1].index;
+					vneighbours.querySelector('ul').innerHTML = '';
+					vneighbours.querySelector('p').innerHTML = vv;
+					for( let i = 0 ; i < neighbours[counter1].n.length ; i++ )
+					{
+						let element = document.createElement('li');
+						element.innerHTML = neighbours[counter1].n[i];
+						vneighbours.querySelector('ul').appendChild(element);
+					}
+					counter2 = -1;
+				}
+				else
+				{
+					counter1 = -1;
+					index = 1;
+				}
+			}
+			else if( counter1 < vertices.querySelectorAll('li').length-1 )
+			{
+				counter1++;
+				index++;
+				v.innerHTML = 'v: '+neighbours[counter1].index;
+				vv = neighbours[counter1].index;
+				vneighbours.querySelector('ul').innerHTML = '';
+				vneighbours.querySelector('p').innerHTML = vv;
+				for( let i = 0 ; i < neighbours[counter1].n.length ; i++ )
+				{
+					let element = document.createElement('li');
+					element.innerHTML = neighbours[counter1].n[i];
+					vneighbours.querySelector('ul').appendChild(element);
+				}
+				counter2 = -1;
+			}
+			else
+			{
+				counter1 = -1;
+				index = 1;
+			}
+		}
+		else if( index === 5 )
+		{
+			steps[6].style.backgroundColor = 'yellow';
+			document.querySelector('#showtree').innerHTML = 'Colorable: True';
+			index++;
+		}
+		else if( index === 6 )
+		{
+			steps[7].style.backgroundColor = 'yellow';
+			if( counter2 === -1 )
+			{
+				if( neighbours[counter1].n.length != 0 )
+				{
+					counter2 = 0;
+					index++;
+					vneighbours.querySelector('ul').querySelectorAll('li')[counter2].style.backgroundColor = 'lightblue';
+				}
+				else
+				{
+					counter2 = -1;
+					index = 10;
+				}
+			}
+			else if( counter2 < neighbours[counter1].n.length-1 )
+			{
+				counter2++;
+				index++;
+				vneighbours.querySelector('ul').querySelectorAll('li')[counter2].style.backgroundColor = 'lightblue';
+			}
+			else
+			{
+				counter2 = -1;
+				index = 10;
+			}
+		}
+		else if( index === 7 )
+		{
+			steps[8].style.backgroundColor = 'yellow';
+			if( points[currentGraph.positions[uv]].style.backgroundColor === points[currentGraph.positions[neighbours[counter1].n[counter2]]].style.backgroundColor )
+			{
+				index++;
+			}
+			else
+				index = 6;
+		}
+		else if( index === 8 )
+		{
+			steps[9].style.backgroundColor = 'yellow';
+			document.querySelector('#showtree').innerHTML = 'Colorable: False';
+			index++;
+		}
+		else if( index === 9 )
+		{
+			steps[10].style.backgroundColor = 'yellow';
+			index++;
+		}
+		else if( index === 10 )
+		{
+			steps[11].style.backgroundColor = 'yellow';
+			if( document.querySelector('#showtree').innerHTML === 'Colorable: True' )
+			{
+				index++;
+			}
+			else
+			{
+				index = 4;
+			}
+		}
+		else if( index === 11 )
+		{
+			steps[12].style.backgroundColor = 'yellow';
+			points[currentGraph.positions[vv]].style.backgroundColor = points[currentGraph.positions[uv]].style.backgroundColor;
+			index++;
+		}
+		else if( index === 12 )
+		{
+			steps[13].style.backgroundColor = 'yellow';
+			vertices.querySelectorAll('li')[counter1].remove();
+			neighbours.splice(counter1,1);
+			counter1--;
+			index = 4;
+		}
+		else if( index === 13 )
+		{
+			steps[14].style.backgroundColor = 'yellow';
+			alert('Total Number of colors used = '+ (8-colors.length));
+			return;
+		}
+	}
+}
 //--------------------------------------Events----------------------------------------
 document.addEventListener('DOMContentLoaded', function() 
 	{
 		let len = 0;
 
 		document.querySelector('#load').onmouseover = () => {
-    			document.querySelector('#load').querySelector('ul').style.display = 'initial';
+			document.querySelector('#load').querySelector('ul').style.display = 'initial';
 			len = document.querySelector('#load').querySelector('ul').querySelectorAll('li').length;
 			for( let i = 1 ; i < len ; i++ )
 			{
@@ -1565,7 +2114,7 @@ document.addEventListener('DOMContentLoaded', function()
 		document.querySelector('#run').onmouseover = () =>
 		{
 			document.querySelector('#run').querySelector('ul').style.display = 'initial';
-			for( let i = 0 ; i < 3 ; i++ )
+			for( let i = 0 ; i < 5 ; i++ )
 			{
 				document.querySelector('#run').querySelector('ul').querySelectorAll('li')[i].onclick = () =>
 				{
@@ -1578,7 +2127,7 @@ document.addEventListener('DOMContentLoaded', function()
 			document.querySelector('#run').querySelector('ul').style.display = 'none';
 		}
 		document.querySelector('#load').onmouseout = () => {
-    			document.querySelector('#load').querySelector('ul').style.display = 'none';
+			document.querySelector('#load').querySelector('ul').style.display = 'none';
 		}
 		document.querySelector('#load').querySelector('ul').querySelectorAll('li')[0].onclick = () =>
 		{

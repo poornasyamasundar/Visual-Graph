@@ -169,7 +169,7 @@ body
 	border-style: solid;
 	border-color: black;
 	border-width: 4px;
-	min-width: 200px;
+	min-width: 400px;
 	overflow: auto;
 	display: none;
 }
@@ -309,6 +309,106 @@ body
 	border-color: black;
 	border-width: 2px;
 }
+#algorithm > #DIJ > #queue
+{
+	background-color: lightyellow;
+	height: 80px;
+	font-size: 20px;
+	font-weight: bold;
+	border-style: solid;
+	border-color: black;
+	border-width: 4px;
+	margin-top: -4px;
+	margin-left: -4px;
+	display: block;
+	overflow: auto;
+}
+#algorithm > #DIJ > #queue > p
+{
+	margin: 0px;
+	height: 25px;
+}
+#algorithm > #DIJ > #queue > ul > li
+{
+	font-size: 15px;
+	background-color: orange;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	padding: 5px;
+	float: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#dijcode
+{
+	background-color: orange;
+	margin-top: 10px;
+}
+#dijcode > li
+{
+	margin-top: -2px;
+	margin-left: -2px;
+	font-size: 20px;
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-style: italic;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+}
+#algorithm > #GC > #vertices
+{
+	background-color: lightyellow;
+	height: 80px;
+	font-size: 20px;
+	font-weight: bold;
+	border-style: solid;
+	border-color: black;
+	border-width: 4px;
+	margin-top: -4px;
+	margin-left: -4px;
+	display: block;
+	overflow: auto;
+}
+#algorithm > #GC > #vertices > p
+{
+	margin: 0px;
+	height: 25px;
+}
+#algorithm > #GC > #vertices > ul > li
+{
+	font-size: 15px;
+	background-color: orange;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	padding: 5px;
+	float: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#gccode
+{
+	background-color: orange;
+	margin-top: 10px;
+}
+#gccode > li
+{
+	margin-top: -2px;
+	margin-left: -2px;
+	font-size: 20px;
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-style: italic;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+}
 #newgraph
 {
 	display: none;
@@ -405,7 +505,7 @@ ul
 #headings > #algoname
 {
 	display: none;
-	width: 240px;
+	width: 300px;
 }
 #headings > li
 {
@@ -502,7 +602,7 @@ ul
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 24px;
+	font-size: 25px;
 	text-align: center;
 	float: left;
 }
@@ -523,12 +623,9 @@ ul
 #headings > #run > ul > li
 {
 	background-color: violet;
-	height: 40px;
-	width: 150px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 24px;
+	width: 200px;
+	padding: 5px;
+	font-size: 20px;
 	border-style: solid;
 	border-width: 4px;
 	margin-bottom: -4px;

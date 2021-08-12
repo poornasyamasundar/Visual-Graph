@@ -21,9 +21,11 @@
 				<li id = 'run'>
 					<div>Run</div>
 					<ul>
-						<li>BFS</li>
-						<li>DFS</li>
-						<li>MST</li>
+						<li>Breadth First Search</li>
+						<li>Depth First Search</li>
+						<li>Minimum Spanning Tree (Prim's)</li>
+						<li>Shortest Path (Dijkstra's)</li>
+						<li>Graph Coloring (Welsh-Powell)</li>
 					</ul>
 				</li>
 				<li id = 'algoname'>Algorithm: </li>
@@ -143,6 +145,50 @@
 					<li>&emsp;&emsp;&emsp;&emsp;A = A &cup; {(u, v)}</li>
 					<li>&emsp;&emsp;&emsp;&emsp;Union(u, v)</li>
 					<li>Print(A)</li>
+				</ul>
+			</div>
+			<div id = 'DIJ'>
+				<div id = 'queue'>
+					<p>Queue</p>
+					<ul>
+					</ul>
+				</div>
+				<ul id = 'dijcode'>
+					<li>for each vertex v &#8712; G.E<br>&emsp;&emsp;v.d = &#9854;<br>&emsp;&emsp;v.p = NIL<br>&emsp;&emsp;v.color = white</li>
+						<li>s.d = 0</li>
+						<li>Q = Min-Queue(G.V)</li>
+						<li>while( Q != NIL)</li>
+						<li>&emsp;&emsp;u = Extract-Min(Q)</li>
+						<li>&emsp;&emsp;u.color = black</li>
+						<li>&emsp;&emsp;for each vertex v &#8712; adj[u]</li>
+						<li>&emsp;&emsp;&emsp;&emsp;if( v.d &gt; (u.d + w(u,v)))</li>
+						<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.d = u.d + w(u,v)</li>
+						<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.p = u</li>
+						<li>Print Tree</li>
+				</ul>
+			</div>
+			<div id = 'GC'>
+				<div id = 'vertices'>
+					<p>V</p>
+					<ul>
+					</ul>
+				</div>
+				<ul id = 'gccode'>
+					<li>List V = G.V</li>
+					<li>sort the vertices in V in descending order of their degrees</li>
+					<li>while( V != NULL )</li>
+					<li>&emsp;&emsp;u = V.pop(0)</li>
+					<li>&emsp;&emsp;u.color = new Color</li>
+					<li>&emsp;&emsp;for each vertex v in V</li>
+					<li>&emsp;&emsp;&emsp;&emsp;Colorable = True</li>
+					<li>&emsp;&emsp;&emsp;&emsp;for each vertex w in v.neighbours</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;if( w.color == u.color )</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Colorable = False</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;break</li>
+					<li>&emsp;&emsp;&emsp;&emsp;if( Colorable )</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;v.color = u.color</li>
+					<li>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;V.pop(v)</li>
+					<li>Return</li>
 				</ul>
 			</div>
 
